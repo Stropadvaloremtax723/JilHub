@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  videos    Video[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Video {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  videoUrl    String       // Can be external URL or local path
+  thumbnailUrl String
+  duration    Int?         // in seconds
+  views       Int          @default(0)
+  published   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  userId      String       @db.ObjectId
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String?      @db.ObjectId
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  tags        TagOnVideo[]
+}
+
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  videos      Video[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tag {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  name      String       @unique
+  slug      String       @unique
+  videos    TagOnVideo[]
+  createdAt DateTime     @default(now())
+}
+
+model TagOnVideo {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  videoId String @db.ObjectId
+  tagId   String @db.ObjectId
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, tagId])
+}
+
+model Settings {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  enableRedirects   Boolean  @default(false)
+  redirectUrl       String?
+  redirectClicks    Int      @default(3)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
