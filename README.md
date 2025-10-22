@@ -378,7 +378,41 @@ npx prisma db push   # Push schema changes to database
 ### Build errors
 **Solution**: Run `npx prisma generate` before building.
 
-## 📄 License
+## � Production Deployment
+
+### Deploy on aaPanel (Recommended)
+
+This project is fully configured for deployment on aaPanel. See detailed guides:
+
+- **[📋 DEPLOYMENT-CHECKLIST.md](./DEPLOYMENT-CHECKLIST.md)** - Complete step-by-step checklist
+- **[📖 DEPLOYMENT.md](./DEPLOYMENT.md)** - Full deployment guide with troubleshooting
+- **[⚡ QUICK-DEPLOY.md](./QUICK-DEPLOY.md)** - Quick reference commands
+
+**Quick Start:**
+1. Install PM2 Manager in aaPanel
+2. Clone repo to `/www/wwwroot/jilhub`
+3. Run `./deploy.sh`
+4. Configure Nginx reverse proxy to port 3000
+5. Enable SSL certificate
+
+**Files Included:**
+- `ecosystem.config.js` - PM2 configuration
+- `deploy.sh` - Deployment script
+- `update.sh` - Update script
+- `.env.production` - Production environment template
+
+### Deploy on Other Platforms
+
+**Vercel/Netlify:**
+```bash
+npm run build
+```
+Set environment variables in platform dashboard.
+
+**VPS/Docker:**
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for custom deployment options.
+
+## �📄 License
 
 **WTFPL (Do What The Fuck You Want To Public License)**
 
